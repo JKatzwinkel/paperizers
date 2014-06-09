@@ -13,7 +13,7 @@ if [ -z "$url" ]; then
 	exit
 fi
 # check if url is known already
-dir="$HOME/.titanic"
+dir="$HOME/.paperizers"
 if [ ! -d "$dir" ]; then
 	mkdir -p $dir
 fi
@@ -44,7 +44,7 @@ done < <(sed -n 's/<img .* src=\"\([^ ]*\)\">/\1/p' out.tex)
 # remove article tags, replace h1 
 sed -i 's/<\/*article[^<>]*>//g; s/<h1>\(.*\)<\/h1>/\\section*{\1}/g' out.tex
 # resolve html special char escapables
-sed -i "s/&#39;/'/g; s/&quot;/\"/g" out.tex
+sed -i "s/&#39;/'/g; s/&quot;/\"/g; s/&#8226;//g; s/&gt;/\\textgreater/g; s/&lt;/\\textless/g" out.tex
 # resolve painful latex pitfall characters:
 sed -i 's/#/\\#/g; s/—/ --- /g; s/%/\\%/g' out.tex
 # br tags
@@ -53,6 +53,8 @@ sed -i 's/<br \/>/\\\\/g' out.tex
 perl -pi.bck -e 's/<em>(.*?)<\/em>/\\textit{\1}/g' out.tex
 # strong tags
 perl -pi.bck -e 's/<strong>(.*?)<\/strong>/\\textbf{\1}/g' out.tex
+# blockquotes
+perl -pi.bck -e 's/<blockquote>(.*?)<\/blockquote>/\\begin{quote}\1\\end{quote}/g' out.tex
 # sub tags
 sed -i 's/<sub>\([^<]*\)<\/sub>/\\textsubscript{\1}/g' out.tex
 # sup tags
@@ -65,8 +67,12 @@ sed -i 's/\(<span class=.ref.><span class=.refnum.>\)/\n\1/g' out.tex
 sed -i 's/<span class=.ref.><span class=.refnum.>[^<]*<\/span><span class=.refbody.>\(.*\)<\/span><\/span>/\\footnote{\1}/g' out.tex
 # a tags [multiple times in case theres multiple links in one line]
 for i in 1 2 3 4 5; do
-  sed -i 's/\(.*\)<a href=.\([^ ]*\)\">\(.*\)<\/a>/\1\3\\textsuperscript{(\\url{\2})}/g' out.tex
+  sed -i 's/\(.*\)<a href=.\([^ ]*\)\">\(.*\)<\/a>/\1\3\\textsuperscript{\\url{\2}}/g' out.tex
 done
+# insert spaces between domain and path in urls to force linebreaks (doesnt work in url element apparently)
+sed -i 's/\([htf]\+ps\?:\/\/\(\S\+\.\)\+\w\{2,4\}\/\)\([^/]\+\)/\1 \3/g' out.tex
+# lists
+sed -i 's/<ul>/\\begin{itemize}/g; s/<\/ul>/\\end{itemize}/g; s/<li>\(.*\)<\/li>/\\item \1/g' out.tex
 # img tags
 sed -i 's#<img .* title=.\(.*\)\" src=\"\([^ ]*\)\">#\\begin{center}\\includegraphics[width=3.7cm]\{'${dir}/xkcd'\2\}\\footnote{\1}\\end{center}\n#g' out.tex
 
