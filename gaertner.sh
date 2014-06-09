@@ -11,7 +11,7 @@ if [ -z "$url" ]; then
 	exit
 fi
 # check if url is known already
-dir="$HOME/.titanic"
+dir="$HOME/.paperizers"
 if [ ! -d "$dir" ]; then
 	mkdir -p $dir
 fi
