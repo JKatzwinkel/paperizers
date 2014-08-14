@@ -46,7 +46,7 @@ sed -i 's/<\/*article[^<>]*>//g; s/<h1>\(.*\)<\/h1>/\\section*{\1}/g' out.tex
 # resolve html special char escapables
 sed -i "s/&#39;/'/g; s/&quot;/\"/g; s/&#8226;//g; s/&gt;/\\textgreater/g; s/&lt;/\\textless/g" out.tex
 # resolve painful latex pitfall characters:
-sed -i 's/#/\\#/g; s/—/ --- /g; s/%/\\%/g' out.tex
+sed -i 's/#/\\#/g; s/—/ --- /g; s/%/\\%/g; s/\$/\\$/g' out.tex
 # br tags
 sed -i 's/<br \/>/\\\\/g' out.tex
 # em tags
