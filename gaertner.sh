@@ -29,7 +29,6 @@ today=$(date +%y%m%d)
 outfile="$dir/gaertner$today"
 echo "saving to $outfile.{html,pdf}"
 
-echo "$today $url" >> $urlfile
 
 echo """
 <?xml version=\"1.0\" encoding=\"utf-8\"?>
@@ -71,5 +70,9 @@ echo "</body></html>" >> "$outfile.html"
 #html2ps -o out.ps -e UTF-8 out.html 
 #html2ps -o out.ps out.html 
 htmldoc -t pdf -f "$outfile.pdf" --size a4 --textfont times --webpage "$outfile.html"
+# print
 lpr "$outfile.pdf"
-
+# if evth went fine, save url as known
+if [ "$?" -eq 0 ]; then
+  echo "$today $url" >> $urlfile
+fi
