@@ -45,6 +45,7 @@ done < <(sed -n 's/<img .* src=\"\([^ ]*\)\">/\1/p' out.tex)
 sed -i 's/<\/*article[^<>]*>//g; s/<h1>\(.*\)<\/h1>/\\section*{\1}/g' out.tex
 # resolve html special char escapables
 sed -i "s/&#39;/'/g; s/&quot;/\"/g; s/&#8226;//g; s/&gt;/\\textgreater/g; s/&lt;/\\textless/g" out.tex
+sed -i "s/®/\\textregistered\g; s/©/\\textcopyright/g; s/™/\\texttrademark/g"  
 # resolve painful latex pitfall characters:
 sed -i 's/#/\\#/g; s/—/ --- /g; s/%/\\%/g; s/\$/\\$/g' out.tex
 # br tags
@@ -53,6 +54,8 @@ sed -i 's/<br \/>/\\\\/g' out.tex
 perl -pi.bck -e 's/<em>(.*?)<\/em>/\\textit{\1}/g' out.tex
 # strong tags
 perl -pi.bck -e 's/<strong>(.*?)<\/strong>/\\textbf{\1}/g' out.tex
+# strike tags
+perl -pi.bck -e 's/<strike>(.*?)<\/strike>/\\sout{\1}/g' out.tex
 # blockquotes
 perl -pi.bck -e 's/<blockquote>(.*?)<\/blockquote>/\\begin{quote}\1\\end{quote}/g' out.tex
 # sub tags
@@ -85,6 +88,8 @@ echo '''
 \usepackage{graphicx}
 \usepackage{fixltx2e}
 \usepackage[colorlinks=true,linkcolor=black,urlcolor=black]{hyperref}
+\usepackage[normalem]{ulem}
+\usepackage{textcomp}
 \begin{document}
 ''' > "$outfile.tex"
 cat out.tex >> "$outfile.tex"
