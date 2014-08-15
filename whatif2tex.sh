@@ -44,10 +44,10 @@ done < <(sed -n 's/<img .* src=\"\([^ ]*\)\">/\1/p' out.tex)
 # remove article tags, replace h1 
 sed -i 's/<\/*article[^<>]*>//g; s/<h1>\(.*\)<\/h1>/\\section*{\1}/g' out.tex
 # resolve html special char escapables
-sed -i "s/&#39;/'/g; s/&quot;/\"/g; s/&#8226;//g; s/&gt;/\\textgreater/g; s/&lt;/\\textless/g" out.tex
-sed -i "s/®/\\textregistered\g; s/©/\\textcopyright/g; s/™/\\texttrademark/g"  
+sed -i "s/&#39;/'/g; s/&quot;/\"/g; s/&#8226;//g; s/&gt;/\\\\textgreater/g; s/&lt;/\\\\textless/g" out.tex
+sed -i 's/®/\\textregistered/g; s/©/\\textcopyright/g; s/™/\\texttrademark/g' out.tex 
 # resolve painful latex pitfall characters:
-sed -i 's/#/\\#/g; s/—/ --- /g; s/%/\\%/g; s/\$/\\$/g' out.tex
+sed -i 's/#/\\#/g; s/—/ --- /g; s/%/\\%/g; s_\([^\]\)\$_\1\\$_g' out.tex
 # br tags
 sed -i 's/<br \/>/\\\\/g' out.tex
 # em tags
@@ -96,7 +96,7 @@ cat out.tex >> "$outfile.tex"
 echo '\end{document}' >> "$outfile.tex"
 
 pdflatex -interaction batchmode -output-directory $dir $outfile.tex
-lpr "$outfile.pdf"
+#lpr "$outfile.pdf"
 # if evth went fine, save url as known
 if [ "$?" -eq 0 ]; then
   echo "$today $url" >> $urlfile
