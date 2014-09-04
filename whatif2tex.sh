@@ -72,6 +72,7 @@ sed -i 's/<span class=.ref.><span class=.refnum.>[^<]*<\/span><span class=.refbo
 for i in 1 2 3 4 5; do
   sed -i 's/\(.*\)<a href=.\([^ ]*\)\">\(.*\)<\/a>/\1\3\\textsuperscript{\\url{\2}}/g' out.tex
 done
+#perl -pi.bck -e 's_([fhtps]{3,5}:\/\/[^/]*\.\w+)(\/\S*)_\1\-\2/g'
 # insert spaces between domain and path in urls to force linebreaks (doesnt work in url element apparently)
 sed -i 's/\([htf]\+ps\?:\/\/\(\S\+\.\)\+\w\{2,4\}\/\)\([^/]\+\)/\1 \3/g' out.tex
 # lists
@@ -96,7 +97,7 @@ cat out.tex >> "$outfile.tex"
 echo '\end{document}' >> "$outfile.tex"
 
 pdflatex -interaction batchmode -output-directory $dir $outfile.tex
-#lpr "$outfile.pdf"
+lpr "$outfile.pdf"
 # if evth went fine, save url as known
 if [ "$?" -eq 0 ]; then
   echo "$today $url" >> $urlfile
